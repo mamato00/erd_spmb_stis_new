@@ -426,6 +426,54 @@ CREATE TABLE "tahapan_kelulusan" (
     CONSTRAINT "tahapan_kelulusan_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "tahun_ajaran_faq" (
+    "id" TEXT NOT NULL,
+    "tahun_ajaran_id" TEXT NOT NULL,
+    "urutan" INTEGER NOT NULL,
+    "pertanyaan" TEXT NOT NULL,
+    "jawaban" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "tahun_ajaran_faq_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "cms_page" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "description" TEXT,
+    "components" JSONB NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'draft',
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "created_by" TEXT NOT NULL,
+    "updated_by" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "cms_page_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "cms_component" (
+    "id" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "icon" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "fields" JSONB NOT NULL,
+    "default_props" JSONB NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "created_by" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "cms_component_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "tahun_ajaran_tahun_key" ON "tahun_ajaran"("tahun");
 
@@ -539,6 +587,24 @@ CREATE INDEX "tahapan_kelulusan_status_kelulusan_idx" ON "tahapan_kelulusan"("st
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tahapan_kelulusan_registrasi_id_key" ON "tahapan_kelulusan"("registrasi_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "cms_page_slug_key" ON "cms_page"("slug");
+
+-- CreateIndex
+CREATE INDEX "cms_page_slug_idx" ON "cms_page"("slug");
+
+-- CreateIndex
+CREATE INDEX "cms_page_status_idx" ON "cms_page"("status");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "cms_component_type_key" ON "cms_component"("type");
+
+-- CreateIndex
+CREATE INDEX "cms_component_type_idx" ON "cms_component"("type");
+
+-- CreateIndex
+CREATE INDEX "cms_component_category_idx" ON "cms_component"("category");
 
 -- AddForeignKey
 ALTER TABLE "tahun_ajaran_fase" ADD CONSTRAINT "tahun_ajaran_fase_tahun_ajaran_id_fkey" FOREIGN KEY ("tahun_ajaran_id") REFERENCES "tahun_ajaran"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -665,4 +731,16 @@ ALTER TABLE "tahapan_sesi_ujian" ADD CONSTRAINT "tahapan_sesi_ujian_tahapan_alok
 
 -- AddForeignKey
 ALTER TABLE "tahapan_kelulusan" ADD CONSTRAINT "tahapan_kelulusan_registrasi_id_fkey" FOREIGN KEY ("registrasi_id") REFERENCES "registrasi"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tahun_ajaran_faq" ADD CONSTRAINT "tahun_ajaran_faq_tahun_ajaran_id_fkey" FOREIGN KEY ("tahun_ajaran_id") REFERENCES "tahun_ajaran"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cms_page" ADD CONSTRAINT "cms_page_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cms_page" ADD CONSTRAINT "cms_page_updated_by_fkey" FOREIGN KEY ("updated_by") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "cms_component" ADD CONSTRAINT "cms_component_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
