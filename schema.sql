@@ -1,17 +1,36 @@
 -- CreateEnum
 CREATE TYPE "UserRole" AS ENUM ('ADMIN_PUSAT', 'ADMIN_DAERAH', 'VERIFIKATOR', 'PIMPINAN', 'PESERTA');
 
+-- CreateEnum
+CREATE TYPE "StatusCmsPage" AS ENUM ('DRAFT', 'PUBLISHED');
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "email" TEXT,
+    "password" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL,
+    "nama" TEXT NOT NULL,
+    "no_hp" TEXT,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "last_login_at" TIMESTAMPTZ(6),
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateTable
 CREATE TABLE "tahun_ajaran" (
     "id" TEXT NOT NULL,
     "tahun" INTEGER NOT NULL,
     "nama_ta" TEXT NOT NULL,
     "deskripsi" TEXT,
-    "tanggal_mulai" TIMESTAMP(3) NOT NULL,
-    "tanggal_selesai" TIMESTAMP(3) NOT NULL,
+    "tanggal_mulai" TIMESTAMPTZ(6) NOT NULL,
+    "tanggal_selesai" TIMESTAMPTZ(6) NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'draft',
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_pkey" PRIMARY KEY ("id")
 );
@@ -31,11 +50,11 @@ CREATE TABLE "tahun_ajaran_fase" (
     "id" TEXT NOT NULL,
     "tahun_ajaran_id" TEXT NOT NULL,
     "master_fase_id" TEXT NOT NULL,
-    "tanggal_mulai" TIMESTAMP(3) NOT NULL,
-    "tanggal_selesai" TIMESTAMP(3) NOT NULL,
-    "is_active" BOOLEAN NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "tanggal_mulai" TIMESTAMPTZ(6) NOT NULL,
+    "tanggal_selesai" TIMESTAMPTZ(6) NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_fase_pkey" PRIMARY KEY ("id")
 );
@@ -48,8 +67,8 @@ CREATE TABLE "tahun_ajaran_tipe_pendaftaran" (
     "deskripsi" TEXT,
     "tahun_ajaran_id" TEXT NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_tipe_pendaftaran_pkey" PRIMARY KEY ("id")
 );
@@ -62,8 +81,8 @@ CREATE TABLE "master_formasi" (
     "jenjang" TEXT NOT NULL,
     "prodi" TEXT,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "master_formasi_pkey" PRIMARY KEY ("id")
 );
@@ -85,8 +104,8 @@ CREATE TABLE "master_lokasi" (
     "provinsi_kode" TEXT NOT NULL,
     "kapasitas" INTEGER,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "master_lokasi_pkey" PRIMARY KEY ("id")
 );
@@ -94,11 +113,11 @@ CREATE TABLE "master_lokasi" (
 -- CreateTable
 CREATE TABLE "tahun_ajaran_lokasi" (
     "id" TEXT NOT NULL,
-    "master_lokasi_id" TEXT NOT NULL,
-    "tahun_ajaran_id" TEXT NOT NULL,
+    "masterLokasiId" TEXT NOT NULL,
+    "tahunAjaranId" TEXT NOT NULL,
     "kapasitas" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_lokasi_pkey" PRIMARY KEY ("id")
 );
@@ -110,8 +129,8 @@ CREATE TABLE "dokumen_lokasi" (
     "nama_dokumen" TEXT NOT NULL,
     "deskripsi_dokumen" TEXT NOT NULL,
     "path_dokumen" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "dokumen_lokasi_pkey" PRIMARY KEY ("id")
 );
@@ -123,27 +142,10 @@ CREATE TABLE "tahun_ajaran_formasi" (
     "master_formasi_id" TEXT NOT NULL,
     "kuota" INTEGER NOT NULL,
     "is_afirmasi" BOOLEAN NOT NULL DEFAULT false,
-    "konfigurasi" JSONB,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_formasi_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "users" (
-    "id" TEXT NOT NULL,
-    "email" TEXT,
-    "password" TEXT NOT NULL,
-    "role" "UserRole" NOT NULL,
-    "nama" TEXT NOT NULL,
-    "no_hp" TEXT,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "last_login_at" TIMESTAMP(3),
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -155,17 +157,17 @@ CREATE TABLE "peserta" (
     "nama" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "no_hp" TEXT,
-    "tanggal_lahir" TIMESTAMP(3),
+    "tanggal_lahir" TIMESTAMPTZ(6),
     "tempat_lahir" TEXT,
     "jenis_kelamin" TEXT,
     "alamat" TEXT,
     "dikdin_data" JSONB,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
     "email_verification_token" TEXT,
-    "email_verification_token_expires" TIMESTAMP(3),
+    "email_verification_token_expires" TIMESTAMPTZ(6),
     "email_verified" BOOLEAN NOT NULL DEFAULT false,
-    "email_verified_at" TIMESTAMP(3),
+    "email_verified_at" TIMESTAMPTZ(6),
 
     CONSTRAINT "peserta_pkey" PRIMARY KEY ("id")
 );
@@ -188,11 +190,11 @@ CREATE TABLE "tahapan" (
     "tahun_ajaran_formasi_id" TEXT NOT NULL,
     "master_tahapan_id" TEXT NOT NULL,
     "urutan_tahapan" INTEGER NOT NULL,
-    "tanggal_mulai" TIMESTAMP(3) NOT NULL,
-    "tanggal_selesai" TIMESTAMP(3) NOT NULL,
+    "tanggal_mulai" TIMESTAMPTZ(6) NOT NULL,
+    "tanggal_selesai" TIMESTAMPTZ(6) NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahapan_pkey" PRIMARY KEY ("id")
 );
@@ -213,9 +215,9 @@ CREATE TABLE "registrasi_field_config" (
     "urutan" INTEGER NOT NULL DEFAULT 0,
     "placeholder" TEXT,
     "help_text" TEXT,
-    "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "registrasi_field_config_pkey" PRIMARY KEY ("id")
 );
@@ -226,8 +228,8 @@ CREATE TABLE "field_config_validation_rule" (
     "registrasi_field_config_id" TEXT NOT NULL,
     "rule_type" TEXT NOT NULL,
     "rule_value" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "field_config_validation_rule_pkey" PRIMARY KEY ("id")
 );
@@ -239,8 +241,8 @@ CREATE TABLE "field_config_option" (
     "option_value" TEXT NOT NULL,
     "option_label" TEXT NOT NULL,
     "urutan" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "field_config_option_pkey" PRIMARY KEY ("id")
 );
@@ -249,11 +251,11 @@ CREATE TABLE "field_config_option" (
 CREATE TABLE "field_config_depends_on" (
     "id" TEXT NOT NULL,
     "registrasi_field_config_id" TEXT NOT NULL,
-    "depend_on_field_id" TEXT NOT NULL,
+    "depends_on_field_id" TEXT NOT NULL,
     "depends_on_operator" TEXT NOT NULL,
     "depends_on_value" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "field_config_depends_on_pkey" PRIMARY KEY ("id")
 );
@@ -266,13 +268,13 @@ CREATE TABLE "registrasi" (
     "tipe_pendaftaran_id" TEXT NOT NULL,
     "peserta_id" TEXT NOT NULL,
     "tahun_ajaran_formasi_id" TEXT NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'draft',
-    "tanggal_registrasi" TIMESTAMP(3) NOT NULL,
-    "verifikasi_by" TEXT,
-    "tanggal_verifikasi" TIMESTAMP(3),
+    "status_registrasi" TEXT NOT NULL DEFAULT 'draft',
+    "tanggal_registrasi" TIMESTAMPTZ(6),
+    "verified_by_user_id" TEXT,
+    "tanggal_verifikasi" TIMESTAMPTZ(6),
     "catatan_verifikasi" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "registrasi_pkey" PRIMARY KEY ("id")
 );
@@ -283,8 +285,8 @@ CREATE TABLE "registrasi_field_value" (
     "registrasi_id" TEXT NOT NULL,
     "registrasi_field_config_id" TEXT NOT NULL,
     "value" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "registrasi_field_value_pkey" PRIMARY KEY ("id")
 );
@@ -303,8 +305,8 @@ CREATE TABLE "tahun_ajaran_dokumen_config" (
     "contoh_file_url" TEXT,
     "urutan" INTEGER NOT NULL DEFAULT 0,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_dokumen_config_pkey" PRIMARY KEY ("id")
 );
@@ -317,12 +319,12 @@ CREATE TABLE "registrasi_dokumen_value" (
     "file_name" TEXT NOT NULL,
     "file_path" TEXT NOT NULL,
     "status_verifikasi" TEXT NOT NULL DEFAULT 'pending',
-    "verified_at" TIMESTAMP(3),
+    "verified_at" TIMESTAMPTZ(6),
     "catatan_verifikasi" TEXT,
     "is_revised" TEXT,
     "verified_by_user_id" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "registrasi_dokumen_value_pkey" PRIMARY KEY ("id")
 );
@@ -335,8 +337,8 @@ CREATE TABLE "tahapan_peserta" (
     "status" TEXT NOT NULL DEFAULT 'not_started',
     "nomor_ujian" TEXT,
     "jadwal_ujian_id" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahapan_peserta_pkey" PRIMARY KEY ("id")
 );
@@ -344,15 +346,15 @@ CREATE TABLE "tahapan_peserta" (
 -- CreateTable
 CREATE TABLE "tahapan_alokasi_ujian" (
     "id" TEXT NOT NULL,
-    "tahun_ajaran_lokasi_id" TEXT NOT NULL,
+    "tahun_ajaran_lokasi_id" TEXT,
     "tahapan_peserta_id" TEXT,
     "kode_ruangan" TEXT NOT NULL,
     "nama_ruangan" TEXT NOT NULL,
     "kapasitas" INTEGER NOT NULL,
     "konfigurasi" JSONB,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahapan_alokasi_ujian_pkey" PRIMARY KEY ("id")
 );
@@ -363,8 +365,8 @@ CREATE TABLE "tahapan_komponen_nilai_config" (
     "tahapan_id" TEXT NOT NULL,
     "nama_komponen" TEXT NOT NULL,
     "deskripsi_komponen" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahapan_komponen_nilai_config_pkey" PRIMARY KEY ("id")
 );
@@ -378,8 +380,8 @@ CREATE TABLE "tahapan_komponen_nilai_value" (
     "value" TEXT NOT NULL,
     "is_lulus" BOOLEAN NOT NULL,
     "catatan" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahapan_komponen_nilai_value_pkey" PRIMARY KEY ("id")
 );
@@ -390,8 +392,8 @@ CREATE TABLE "tahun_ajaran_sesi_ujian" (
     "tahun_ajaran_id" TEXT NOT NULL,
     "waktu_mulai" TEXT NOT NULL,
     "waktu_selesai" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_sesi_ujian_pkey" PRIMARY KEY ("id")
 );
@@ -401,10 +403,10 @@ CREATE TABLE "tahapan_sesi_ujian" (
     "id" TEXT NOT NULL,
     "tahun_ajaran_sesi_ujian_id" TEXT NOT NULL,
     "tahapan_alokasi_ujian_id" TEXT NOT NULL,
-    "tanggal_ujian" TIMESTAMP(3) NOT NULL,
+    "tanggal_ujian" TIMESTAMPTZ(6),
     "status" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahapan_sesi_ujian_pkey" PRIMARY KEY ("id")
 );
@@ -419,9 +421,9 @@ CREATE TABLE "tahapan_kelulusan" (
     "tahun_ajaran_formasi_id" TEXT NOT NULL,
     "status_kelulusan" TEXT,
     "catatan" TEXT,
-    "tanggal_pengumuman" TIMESTAMP(3),
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "tanggal_pengumuman" TIMESTAMPTZ(6),
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahapan_kelulusan_pkey" PRIMARY KEY ("id")
 );
@@ -433,8 +435,8 @@ CREATE TABLE "tahun_ajaran_faq" (
     "urutan" INTEGER NOT NULL,
     "pertanyaan" TEXT NOT NULL,
     "jawaban" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "tahun_ajaran_faq_pkey" PRIMARY KEY ("id")
 );
@@ -446,12 +448,12 @@ CREATE TABLE "cms_page" (
     "slug" TEXT NOT NULL,
     "description" TEXT,
     "components" JSONB NOT NULL,
-    "status" TEXT NOT NULL DEFAULT 'draft',
+    "status" "StatusCmsPage" NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_by" TEXT NOT NULL,
     "updated_by" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "cms_page_pkey" PRIMARY KEY ("id")
 );
@@ -468,11 +470,20 @@ CREATE TABLE "cms_component" (
     "default_props" JSONB NOT NULL,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_by" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
     CONSTRAINT "cms_component_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE INDEX "users_email_idx" ON "users"("email");
+
+-- CreateIndex
+CREATE INDEX "users_role_idx" ON "users"("role");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tahun_ajaran_tahun_key" ON "tahun_ajaran"("tahun");
@@ -490,19 +501,7 @@ CREATE UNIQUE INDEX "master_lokasi_kode_key" ON "master_lokasi"("kode");
 CREATE INDEX "master_lokasi_provinsi_kode_idx" ON "master_lokasi"("provinsi_kode");
 
 -- CreateIndex
-CREATE INDEX "tahun_ajaran_formasi_tahun_ajaran_id_idx" ON "tahun_ajaran_formasi"("tahun_ajaran_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "tahun_ajaran_formasi_tahun_ajaran_id_master_formasi_id_key" ON "tahun_ajaran_formasi"("tahun_ajaran_id", "master_formasi_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
-
--- CreateIndex
-CREATE INDEX "users_email_idx" ON "users"("email");
-
--- CreateIndex
-CREATE INDEX "users_role_idx" ON "users"("role");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "peserta_user_id_key" ON "peserta"("user_id");
@@ -559,16 +558,13 @@ CREATE INDEX "registrasi_field_value_registrasi_id_idx" ON "registrasi_field_val
 CREATE INDEX "tahun_ajaran_dokumen_config_tahun_ajaran_id_tipe_pendaftara_idx" ON "tahun_ajaran_dokumen_config"("tahun_ajaran_id", "tipe_pendaftaran_id");
 
 -- CreateIndex
-CREATE INDEX "tahun_ajaran_dokumen_config_jenis_dokumen_idx" ON "tahun_ajaran_dokumen_config"("jenis_dokumen");
-
--- CreateIndex
 CREATE UNIQUE INDEX "tahun_ajaran_dokumen_config_tahun_ajaran_id_tipe_pendaftara_key" ON "tahun_ajaran_dokumen_config"("tahun_ajaran_id", "tipe_pendaftaran_id", "jenis_dokumen");
 
 -- CreateIndex
 CREATE INDEX "registrasi_dokumen_value_registrasi_id_idx" ON "registrasi_dokumen_value"("registrasi_id");
 
 -- CreateIndex
-CREATE INDEX "tahapan_peserta_registrasi_id_status_idx" ON "tahapan_peserta"("registrasi_id", "status");
+CREATE INDEX "tahapan_peserta_registrasi_id_idx" ON "tahapan_peserta"("registrasi_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "tahapan_peserta_registrasi_id_tahapan_id_nomor_ujian_key" ON "tahapan_peserta"("registrasi_id", "tahapan_id", "nomor_ujian");
@@ -583,10 +579,7 @@ CREATE INDEX "tahapan_komponen_nilai_value_tahapan_peserta_id_nomor_ujian_idx" O
 CREATE INDEX "tahapan_sesi_ujian_tahapan_alokasi_ujian_id_idx" ON "tahapan_sesi_ujian"("tahapan_alokasi_ujian_id");
 
 -- CreateIndex
-CREATE INDEX "tahapan_kelulusan_status_kelulusan_idx" ON "tahapan_kelulusan"("status_kelulusan");
-
--- CreateIndex
-CREATE UNIQUE INDEX "tahapan_kelulusan_registrasi_id_key" ON "tahapan_kelulusan"("registrasi_id");
+CREATE INDEX "tahapan_kelulusan_registrasi_id_idx" ON "tahapan_kelulusan"("registrasi_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "cms_page_slug_key" ON "cms_page"("slug");
@@ -619,10 +612,10 @@ ALTER TABLE "tahun_ajaran_tipe_pendaftaran" ADD CONSTRAINT "tahun_ajaran_tipe_pe
 ALTER TABLE "master_lokasi" ADD CONSTRAINT "master_lokasi_provinsi_kode_fkey" FOREIGN KEY ("provinsi_kode") REFERENCES "master_provinsi"("kode") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tahun_ajaran_lokasi" ADD CONSTRAINT "tahun_ajaran_lokasi_master_lokasi_id_fkey" FOREIGN KEY ("master_lokasi_id") REFERENCES "master_lokasi"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "tahun_ajaran_lokasi" ADD CONSTRAINT "tahun_ajaran_lokasi_masterLokasiId_fkey" FOREIGN KEY ("masterLokasiId") REFERENCES "master_lokasi"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tahun_ajaran_lokasi" ADD CONSTRAINT "tahun_ajaran_lokasi_tahun_ajaran_id_fkey" FOREIGN KEY ("tahun_ajaran_id") REFERENCES "tahun_ajaran"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "tahun_ajaran_lokasi" ADD CONSTRAINT "tahun_ajaran_lokasi_tahunAjaranId_fkey" FOREIGN KEY ("tahunAjaranId") REFERENCES "tahun_ajaran"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "dokumen_lokasi" ADD CONSTRAINT "dokumen_lokasi_tahun_ajaran_lokasi_id_fkey" FOREIGN KEY ("tahun_ajaran_lokasi_id") REFERENCES "tahun_ajaran_lokasi"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -679,6 +672,9 @@ ALTER TABLE "registrasi" ADD CONSTRAINT "registrasi_peserta_id_fkey" FOREIGN KEY
 ALTER TABLE "registrasi" ADD CONSTRAINT "registrasi_tipe_pendaftaran_id_fkey" FOREIGN KEY ("tipe_pendaftaran_id") REFERENCES "tahun_ajaran_tipe_pendaftaran"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "registrasi" ADD CONSTRAINT "registrasi_verified_by_user_id_fkey" FOREIGN KEY ("verified_by_user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "registrasi_field_value" ADD CONSTRAINT "registrasi_field_value_registrasi_field_config_id_fkey" FOREIGN KEY ("registrasi_field_config_id") REFERENCES "registrasi_field_config"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -709,7 +705,7 @@ ALTER TABLE "tahapan_peserta" ADD CONSTRAINT "tahapan_peserta_registrasi_id_fkey
 ALTER TABLE "tahapan_alokasi_ujian" ADD CONSTRAINT "tahapan_alokasi_ujian_tahapan_peserta_id_fkey" FOREIGN KEY ("tahapan_peserta_id") REFERENCES "tahapan_peserta"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tahapan_alokasi_ujian" ADD CONSTRAINT "tahapan_alokasi_ujian_tahun_ajaran_lokasi_id_fkey" FOREIGN KEY ("tahun_ajaran_lokasi_id") REFERENCES "tahun_ajaran_lokasi"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "tahapan_alokasi_ujian" ADD CONSTRAINT "tahapan_alokasi_ujian_tahun_ajaran_lokasi_id_fkey" FOREIGN KEY ("tahun_ajaran_lokasi_id") REFERENCES "tahun_ajaran_lokasi"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "tahapan_komponen_nilai_config" ADD CONSTRAINT "tahapan_komponen_nilai_config_tahapan_id_fkey" FOREIGN KEY ("tahapan_id") REFERENCES "tahapan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -743,4 +739,3 @@ ALTER TABLE "cms_page" ADD CONSTRAINT "cms_page_updated_by_fkey" FOREIGN KEY ("u
 
 -- AddForeignKey
 ALTER TABLE "cms_component" ADD CONSTRAINT "cms_component_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
