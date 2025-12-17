@@ -495,9 +495,9 @@ CREATE TABLE "tahapan_komponen_nilai_value" (
 -- CreateTable
 CREATE TABLE "tahapan_status_kelulusan" (
     "id" TEXT NOT NULL,
+    "tahapan_id" UUID NOT NULL,
     "nama_status_kelulusan" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "tahapan_id" UUID NOT NULL,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL,
 
@@ -768,6 +768,9 @@ ALTER TABLE "tahapan_komponen_nilai_value" ADD CONSTRAINT "tahapan_komponen_nila
 
 -- AddForeignKey
 ALTER TABLE "tahapan_komponen_nilai_value" ADD CONSTRAINT "tahapan_komponen_nilai_value_tahapan_peserta_id_fkey" FOREIGN KEY ("tahapan_peserta_id") REFERENCES "tahapan_peserta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tahapan_status_kelulusan" ADD CONSTRAINT "tahapan_status_kelulusan_tahapan_id_fkey" FOREIGN KEY ("tahapan_id") REFERENCES "tahapan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "tahapan_peserta" ADD CONSTRAINT "tahapan_peserta_tahapan_id_fkey" FOREIGN KEY ("tahapan_id") REFERENCES "tahapan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
