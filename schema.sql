@@ -743,6 +743,9 @@ ALTER TABLE "tahapan" ADD CONSTRAINT "tahapan_spmb_activity_id_fkey" FOREIGN KEY
 ALTER TABLE "tahapan" ADD CONSTRAINT "tahapan_tipe_pendaftaran_id_fkey" FOREIGN KEY ("tipe_pendaftaran_id") REFERENCES "spmb_activity_tipe_pendaftaran"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "tahapan_ujian" ADD CONSTRAINT "tahapan_ujian_tahapan_id_fkey" FOREIGN KEY ("tahapan_id") REFERENCES "tahapan"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "master_lokasi" ADD CONSTRAINT "master_lokasi_kode_provinsi_fkey" FOREIGN KEY ("kode_provinsi") REFERENCES "master_provinsi"("kode_provinsi") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
