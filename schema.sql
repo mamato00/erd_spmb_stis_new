@@ -402,9 +402,10 @@ CREATE TABLE "tahapan_ujian" (
 -- CreateTable
 CREATE TABLE "master_lokasi" (
     "id" UUID NOT NULL,
-    "nama" TEXT NOT NULL,
-    "alamat" TEXT,
+    "namaLokasi" TEXT NOT NULL,
+    "alamatLokasi" TEXT,
     "kode_provinsi" TEXT NOT NULL,
+    "kapasitas" INTEGER,
     "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(6) NOT NULL,
@@ -800,3 +801,4 @@ ALTER TABLE "cms_page" ADD CONSTRAINT "cms_page_updated_by_fkey" FOREIGN KEY ("u
 
 -- AddForeignKey
 ALTER TABLE "cms_component" ADD CONSTRAINT "cms_component_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
